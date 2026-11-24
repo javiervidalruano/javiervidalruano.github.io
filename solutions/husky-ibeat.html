@@ -1,0 +1,882 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="dark"><meta name="description" content="Independent browser-based Mikuni EFI diagnostics over a direct USB to K-line serial adapter."><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; worker-src 'none'"><title>Husky Diagnostics | Direct USB v2.0.0</title>
+<style>:root{color-scheme:dark;--bg:#10141b;--panel:#191f2a;--panel2:#202836;--line:#303c4e;--ink:#edf2fa;--muted:#a5b4c8;--accent:#86b9ff;--green:#80dbb3;--amber:#ffd18a;--red:#ff9c9c;--radius:14px;font:15px/1.5 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink)}button,input,select{font:inherit}button{border:1px solid var(--line);border-radius:9px;background:var(--panel2);color:var(--ink);padding:10px 16px;font-weight:650;cursor:pointer;transition:background .12s,border-color .12s}button:hover:enabled{background:#303e52;border-color:#6c82a0}button:disabled{opacity:.38;cursor:not-allowed}button.primary{background:#a6caff;color:#0c1c34;border-color:#a6caff}button.primary:hover:enabled{background:#c4dcff}button.danger{color:#ffd4d4;border-color:#89555e;background:#39272f}button.small{padding:6px 11px;font-size:.85rem}button.ghost{background:transparent}input,select{background:#111822;color:var(--ink);border:1px solid #4d5f79;border-radius:8px;padding:9px 11px;min-width:0}input[type=checkbox]{accent-color:var(--accent);width:17px;height:17px;margin:0 7px 0 0;vertical-align:middle}input[type=number]{width:116px}input:focus,select:focus,button:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:3px}a{color:var(--accent)}header{border-bottom:1px solid var(--line);background:#151b24}.head{max-width:1320px;margin:auto;padding:24px 28px 20px;display:flex;justify-content:space-between;align-items:center;gap:20px}.brandline{display:flex;align-items:center;gap:14px}.brandmark{width:43px;height:43px;border-radius:11px;background:#a6caff;color:#101b2b;display:grid;place-content:center;font-size:25px;font-weight:900}.brand{font-size:21px;font-weight:780;letter-spacing:-.5px}.eyebrow{color:var(--muted);font-size:11px;letter-spacing:1.8px;text-transform:uppercase;font-weight:700}.subbrand{font-size:12px;color:var(--muted);margin-top:2px}.connect{display:flex;align-items:center;gap:9px;flex-wrap:wrap}.badge{border:1px solid var(--line);padding:5px 10px;border-radius:20px;font-size:12px;white-space:nowrap;color:var(--muted)}.badge.good{color:var(--green);border-color:#3d695b}.badge.warn{color:var(--amber);border-color:#785f3c}.toolbar{max-width:1320px;margin:auto;padding:0 28px;display:flex;justify-content:space-between;gap:10px;align-items:end}nav{display:flex;gap:5px;flex-wrap:wrap}nav button{border:0;border-radius:7px 7px 0 0;background:transparent;padding:12px 17px;color:var(--muted);border-bottom:3px solid transparent}nav button.active{color:var(--ink);background:#202936;border-bottom-color:var(--accent)}.wiremode{font:12px ui-monospace,SFMono-Regular,Consolas,monospace;color:var(--muted);padding-bottom:15px;white-space:nowrap}main{max-width:1320px;margin:auto;padding:24px 28px 50px}.notice{border:1px solid var(--line);border-left:3px solid var(--accent);padding:12px 15px;border-radius:9px;color:#d5dfed;margin-bottom:20px;background:#192230;font-size:13px}.notice.warn{border-color:#6a563b;border-left-color:var(--amber);background:#2a241c;color:#ffdda9}.notice.error{border-color:#74434c;border-left-color:var(--red);background:#2a1d27;color:#ffd0d0}.notice.good{border-color:#315b51;border-left-color:var(--green);background:#152723;color:#b9f5dc}.notice p{margin:5px 0}.demo-banner{background:#453720;border:1px solid #8b6d3e;color:#ffe2ac;border-radius:9px;padding:12px 16px;margin-bottom:18px;display:flex;justify-content:space-between;gap:15px;align-items:center;font-size:13px}.demo-banner[hidden]{display:none}.section-head{display:flex;justify-content:space-between;align-items:center;gap:20px;margin:0 0 19px}.section-head h1,.section-head h2{margin:0;font-size:25px;letter-spacing:-.5px}.section-head p{margin:4px 0 0;color:var(--muted);font-size:13px}.actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.controls{display:flex;gap:12px;flex-wrap:wrap;align-items:end;padding:16px;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);margin-bottom:18px}.field{display:grid;gap:5px}.field>span,label.caption{font-size:12px;color:var(--muted)}.push{margin-left:auto}.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}.card,.panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius)}.card{padding:18px 18px 14px;position:relative;min-height:181px}.card .name{font-size:13px;font-weight:600;color:#c4d1e2;display:flex;justify-content:space-between;align-items:center;gap:7px}.check{font-size:10px;text-transform:uppercase;letter-spacing:.4px;padding:2px 5px;color:var(--amber);border:1px solid #675742;border-radius:4px;white-space:nowrap}.reading{display:flex;align-items:baseline;gap:7px;min-height:65px;padding-top:9px}.value{font-size:35px;font-weight:690;letter-spacing:-1px;font-variant-numeric:tabular-nums;line-height:1.3}.unit{font-size:13px;color:var(--muted)}.card[data-code=HD20017] .value{font-size:24px;letter-spacing:-.4px}.mono,code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace}.rawline{font-size:11px;color:var(--muted);margin-top:3px}.cardfoot{display:flex;justify-content:space-between;align-items:center;margin-top:10px;gap:6px}.age{font-size:11px;color:var(--muted)}.card.failed{border-color:#885360}.card.failed .value{color:var(--red)}.card.stale .reading{opacity:.5}.tiny{font-size:12px;color:var(--muted)}.footnote{color:var(--muted);font-size:12px;margin:14px 0 22px}.panel{padding:22px;margin-bottom:18px}.panel h2{font-size:19px;margin:0 0 12px;letter-spacing:-.3px}.panel p{color:var(--muted);font-size:13px}.panel-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}.panel-head h2{margin:0}.chart-wrap{height:205px;position:relative}canvas{display:block;width:100%;height:100%}.chart-empty{position:absolute;inset:0;display:grid;place-content:center;color:var(--muted);font-size:13px;pointer-events:none}.two-col{display:grid;grid-template-columns:1fr 1fr;gap:18px}.co-row{display:grid;grid-template-columns:minmax(105px,1fr) minmax(105px,1fr) 116px auto auto;gap:15px;align-items:center;padding:17px 0;border-top:1px solid var(--line)}.co-name{font-weight:750}.co-current{font-size:24px;font-weight:700;font-variant-numeric:tabular-nums}.co-note{font-size:11px;color:var(--muted);min-height:17px}.result{font-size:12px;margin-top:7px;color:var(--muted);grid-column:1/-1}.result.good{color:var(--green)}.result.warn{color:var(--amber)}.result.error{color:var(--red)}.metric-row{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin:18px 0}.metric{background:#131b25;border:1px solid var(--line);padding:14px;border-radius:9px}.metric .label{font-size:12px;color:var(--muted)}.metric strong{display:block;font-size:26px;font-variant-numeric:tabular-nums;margin-top:5px}.metric code{font-size:11px;color:var(--muted)}.tps-check{display:block;font-size:13px;margin:18px 0}.table-wrap{overflow-x:auto}table{border-collapse:collapse;width:100%;font-size:13px}th{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.55px;font-weight:650;text-align:left;padding:12px 10px;background:#131b26;border-bottom:1px solid var(--line)}td{padding:11px 10px;border-bottom:1px solid #2a3545}tbody tr:last-child td{border-bottom:0}td.good{color:var(--green)}td.warn{color:var(--amber)}td.muted{color:var(--muted)}.table-caption{display:flex;justify-content:space-between;gap:10px;align-items:center;margin:0 0 12px}.vehicle-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.identity{padding:24px;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius)}.identity .label{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}.identity strong{display:block;font-size:27px;margin:10px 0 5px;word-break:break-word}.identity code{display:block;font-size:12px;color:var(--muted);word-break:break-all}.terminal{background:#0c1119;border:1px solid var(--line);border-radius:10px;padding:14px;height:355px;overflow:auto;white-space:pre-wrap;word-break:break-all;font:12px/1.65 ui-monospace,SFMono-Regular,Consolas,monospace}.terminal .tx{color:#a6caff}.terminal .rx{color:#91deb8}.terminal .error{color:var(--red)}.terminal .info{color:var(--muted)}.terminal .audit{color:#e5c4ff}.terminal .time{color:#70819b}.stats{display:flex;gap:20px;flex-wrap:wrap;color:var(--muted);font-size:12px;margin:14px 0}.stats strong{color:var(--ink);font-variant-numeric:tabular-nums}.console-form{display:flex;gap:8px;flex-wrap:wrap;margin-top:13px}.console-form input{flex:1;min-width:180px;font-family:ui-monospace,monospace;text-transform:uppercase}details{border-top:1px solid var(--line);padding-top:14px;margin-top:17px}summary{cursor:pointer;color:var(--accent);font-size:13px;font-weight:650}details p,details li{font-size:13px;color:var(--muted)}details ul{padding-left:20px}.settings{display:flex;gap:18px;flex-wrap:wrap;margin:16px 0}.settings input[type=number]{width:110px}.aboutgrid{display:grid;grid-template-columns:1fr 1fr;gap:25px}.statusbar{margin-top:25px;padding-top:16px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:15px;font-size:11px;color:var(--muted)}.page[hidden]{display:none!important}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}.subtle{color:var(--muted)}#job{max-width:100%;overflow-wrap:anywhere}#message{white-space:pre-wrap;overflow-wrap:anywhere}#logCount{white-space:nowrap}.tagline{font-size:12px;color:var(--muted)}.error-text{color:var(--red)}
+@media(max-width:1050px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}.two-col{grid-template-columns:1fr}.co-row{grid-template-columns:1fr 1fr 116px auto auto}.wiremode{display:none}.head{padding:20px}.toolbar{padding:0 20px}main{padding:20px}.brand{font-size:19px}}
+@media(max-width:700px){.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.head{flex-direction:column;align-items:stretch;gap:15px}.connect{justify-content:flex-start}.toolbar{overflow-x:auto}nav{flex-wrap:nowrap}nav button{padding:11px;font-size:13px}.section-head{align-items:flex-start;flex-direction:column;gap:12px}.section-head h1{font-size:23px}.card{padding:14px;min-height:170px}.card .name{font-size:12px;flex-wrap:wrap}.value{font-size:30px}.card[data-code=HD20017] .value{font-size:20px}.unit{font-size:11px}.push{margin-left:0}.co-row{grid-template-columns:1fr 1fr 105px;gap:10px}.co-row button{grid-row:auto}.co-row input{width:105px}.vehicle-grid,.aboutgrid{grid-template-columns:1fr}.identity strong{font-size:23px}.demo-banner{flex-direction:column;align-items:flex-start}.statusbar{flex-direction:column}.panel{padding:17px}.panel-head{flex-wrap:wrap}.co-current{font-size:21px}.controls{gap:10px}.field select{max-width:240px}main{padding:16px}.metric strong{font-size:22px}}
+
+/* Author display rules must never override the semantic hidden attribute. */
+[hidden]{display:none!important}
+</style></head><body>
+<header><div class="head"><div class="brandline"><div class="brandmark" aria-hidden="true">H</div><div><div class="brand">Husky Diagnostics</div><div class="subbrand">DIRECT USB / MIKUNI EFI <span class="subtle">&nbsp; v2.0.0</span></div></div></div><div class="connect"><span id="connectionBadge" class="badge">Disconnected</span><button id="demoBtn" class="ghost">Try demo</button><button id="connectBtn" class="primary">Connect USB</button><button id="disconnectBtn" hidden>Disconnect</button></div></div><div class="toolbar"><nav aria-label="Application pages"><button class="active" data-tab="dashboard" aria-current="page">Dashboard</button><button data-tab="adjustments">Adjustments</button><button data-tab="faults">Faults</button><button data-tab="vehicle">Vehicle</button><button data-tab="state">ECU state</button><button data-tab="console">Console &amp; setup</button></nav><div class="wiremode">19200 &middot; 8N1 &middot; CR+LF</div></div></header>
+<main>
+<div id="compatibility" class="notice warn" hidden></div>
+<div id="demoBanner" class="demo-banner" hidden><span><strong>DEMO MODE</strong> &mdash; simulated ECU data. Nothing is connected to your motorcycle.</span><label><input id="demoRunning" type="checkbox">Simulate engine running</label></div>
+<div id="message" class="notice" role="status" aria-live="polite">Connect your USB-to-K-line cable, switch the bike on, then choose Connect USB. Close iBeat and any serial terminal first.</div>
+<section id="page-dashboard" class="page" aria-labelledby="dashboardTitle">
+<div class="section-head"><div><div class="eyebrow">Workshop / live data</div><h1 id="dashboardTitle">The ECU, without the middleman.</h1><p>No ESP32. No command translator. Reads go straight to the Mikuni ECU.</p></div><div class="actions"><button id="exportSamples" class="small">Export readings CSV</button></div></div>
+<div class="controls"><label class="field"><span>Monitor</span><select id="monitorTarget"><option value="all">All dashboard parameters</option></select></label><label class="field"><span>Scan pace</span><select id="pace"><option value="40">Normal</option><option value="10">Fast</option><option value="120">Gentle</option></select></label><button id="startMonitor" data-online class="primary">Start monitor</button><button id="stopMonitor" class="danger" disabled>Stop</button><button id="readOnce" data-online>Read once</button><span class="push tiny" id="monitorStatus">Monitor stopped</span></div>
+<div id="sensorGrid" class="grid"></div><p class="footnote">Conversions match the Rev 2.0 source audit; physical ECU regression testing is still required. Every card retains the raw word and decimal value; throttle readings are never clamped to 100%.</p>
+<div class="panel"><div class="panel-head"><h2>Live trace</h2><label class="field"><span class="sr-only">Trace parameter</span><select id="chartChannel"></select></label></div><div class="chart-wrap"><canvas id="trace" role="img" aria-label="Live trace of the selected parameter"></canvas><div id="chartEmpty" class="chart-empty">Start monitoring to build a trace.</div></div><div class="tiny" id="chartSummary">No samples in this connection.</div></div>
+</section>
+<section id="page-adjustments" class="page" hidden aria-labelledby="adjustmentsTitle">
+<div class="section-head"><div><div class="eyebrow">Workshop / calibration</div><h1 id="adjustmentsTitle">CO &amp; throttle adjustment</h1><p>Read the current values. Apply one change. Verify what the ECU stored.</p></div><button id="readAdjustments" data-online>Read current values</button></div>
+<div class="notice">Use the vehicle workshop procedure and a CO-compatible configuration. These are fueling multipliers, not measured exhaust CO. This app never changes the ECU's operating mode.</div>
+<div class="panel"><div class="panel-head"><h2>CO adjustment</h2><span class="tiny">0.1% steps &middot; ECU-reported limits</span></div><p id="coLimits" class="tiny">Mode and ECU limits not read.</p><div id="coRows"></div><p class="tiny">Apply writes immediately, then checks for <code>HA</code> and reads the setting back. Editing a box alone sends nothing. Session-original values are captured from this ECU, never assumed to be 100%.</p><button id="exportAudit" class="small">Save calibration / fault audit</button></div>
+<div class="two-col"><div class="panel"><h2>TPS idle setting</h2><p>Key on, engine stopped, throttle completely closed. This writes the sampled TPS word to the saved idle reference; it does not move the sensor or adjust the idle screw.</p><div class="metric-row"><div class="metric"><div class="label">Current TPS voltage</div><strong id="tpsCurrent">&mdash;</strong><code id="tpsCurrentRaw">HD2000E</code></div><div class="metric"><div class="label">Saved idle reference</div><strong id="tpsSaved">&mdash;</strong><code id="tpsSavedRaw">HE20001</code></div></div><div class="tiny" id="tpsInfo">Read the values before making an adjustment.</div><label class="tps-check"><input id="throttleClosed" type="checkbox">I have stopped the engine and fully closed the throttle.</label><div class="actions"><button id="readTPS" data-online>Read TPS</button><button id="resetTPS" data-online class="danger">Set current TPS as idle</button></div><div id="tpsResult" class="result">Documented write sequence; this browser implementation still requires bike testing.</div></div><div class="panel"><h2>What is protected</h2><p>CO uses a single Apply click, with no prepare/confirm sequence. The app reads the previous word first and keeps an audit entry before sending the write.</p><p>TPS reset checks RPM twice and checks that the sampled voltage has not moved. A final confirmation is retained for this calibration operation.</p><p>A missing acknowledgement never triggers another write automatically. A readback attempt is made after a drain interval, and any uncertain result stays marked as uncertain.</p><p>Changes persist in the ECU. Closing this page does not roll them back. Restore original is an explicit, verified write to the current session's baseline.</p></div></div>
+</section>
+<section id="page-faults" class="page" hidden aria-labelledby="faultsTitle">
+<div class="section-head"><div><div class="eyebrow">Workshop / diagnostics</div><h1 id="faultsTitle">Faults &amp; stored history</h1><p>Current fault flags and EEPROM history are separate read spaces.</p></div><div class="actions"><button id="readFaults" data-online class="primary">Read faults &amp; history</button><button id="exportFaults" class="small">Export fault report</button></div></div>
+<div class="two-col"><div class="panel"><div class="table-caption"><h2>Current fault monitor</h2><span id="generalFault" class="badge">Not read</span></div><div class="table-wrap"><table><thead><tr><th>Item</th><th>State</th><th>Raw / address</th></tr></thead><tbody id="faultBody"></tbody></table></div><p class="tiny">HD20020 is the summary. Masks 4000 and 0800 are decoded independently; other bits remain visible. These rows are read-only.</p></div><div class="panel"><div class="table-caption"><h2>Stored history</h2><span id="historyOrder" class="tiny">Order from HE20017</span></div><div class="table-wrap"><table><thead><tr><th>#</th><th>Code / description</th><th>EEPROM read</th></tr></thead><tbody id="historyBody"></tbody></table></div><p id="historyAge" class="tiny">Not read in this connection.</p><button id="clearHistory" data-online class="danger">Clear stored history...</button><p class="tiny">Experimental / bike test pending. Saves a snapshot, writes all 17 words, pointer first (0017 through 0027), including already-zero words, and verifies each write. This is not an active-fault reset and does not repair a failed sensor.</p></div></div>
+<div class="notice warn">The old decoding document assigns overlapping <code>HE3</code> addresses to both live-fault resets and EEPROM history. This build does <strong>not</strong> guess at a general or active-fault clear command. The audited complete clear writes zero to EEPROM <code>0017&ndash;0027</code>, then rereads the pointer and history.</div>
+</section>
+<section id="page-vehicle" class="page" hidden aria-labelledby="vehicleTitle">
+<div class="section-head"><div><div class="eyebrow">Workshop / identity</div><h1 id="vehicleTitle">Vehicle &amp; operating time</h1><p>Identity and hours are read on demand, not continuously polled.</p></div><button id="readVehicle" data-online class="primary">Read vehicle information</button></div>
+<div class="vehicle-grid"><div class="identity"><div class="label">Vehicle identification number</div><strong id="vin">Not read</strong><code id="vinRaw">HE2003A&ndash;HE20042 / first 17 characters</code></div><div class="identity"><div class="label">Engine number</div><strong id="engineNo">Not read</strong><code id="engineRaw">HE20043&ndash;HE20047</code></div><div class="identity"><div class="label">ECU program version</div><strong id="ecuVersion">Not read</strong><code id="versionRaw">HD2001F &rarr; resolved 16-byte read</code></div><div class="identity"><div class="label">Engine operating time</div><strong id="hours">Not read</strong><code id="hoursRaw">HE20015 + HE20016 / 10-minute intervals</code><p class="tiny" id="hoursDetail">Upper word is checked again to avoid a torn rollover read.</p><button id="readHours" data-online class="small">Read hours only</button></div></div><p class="footnote" id="vehicleTime">No identity information has been read in this connection.</p><div class="panel"><h2>Release scope</h2><p>This is an independent diagnostic test release for the project's Mikuni EFI command set, not a Mikuni or Husqvarna product. It is not a firmware flasher. Feedback-setting writes, long-term adaptation reset, VIN/engine-number editing and iBeat's service-history database are not implemented.</p><p>Nothing displayed in Demo mode is a reading from your bike. Reconnecting or switching between Demo and USB clears cached values and session calibration originals.</p></div>
+</section>
+<section id="page-state" class="page" hidden aria-labelledby="stateTitle">
+<div class="section-head"><div><div class="eyebrow">Workshop / audited parameters</div><h1 id="stateTitle">ECU state &amp; learned values</h1><p>On-demand reads. Optional or unsupported parameters do not interrupt the main dashboard.</p></div><button id="readExtra" data-online class="primary">Read ECU state</button></div>
+<div class="notice">Current mode and O2 activity are separate. C000 is Maintenance mode. Reading stored feedback or learned values on a Power Up bike does not mean O2 feedback is active. No mode change, feedback write or adaptation reset is sent from this page.</div>
+<div class="panel"><h2>Status, feedback &amp; metadata</h2><div class="table-wrap"><table><thead><tr><th>Parameter</th><th>Value</th><th>Command / interpretation</th></tr></thead><tbody id="extraBody"></tbody></table></div></div>
+<div class="panel"><h2>Long-term adaptation</h2><p>Neutral is H0080 = 100%. These EEPROM values use a different scale from CO and the live O2 integrator. Relative load/RPM regions only; no numerical boundaries are established.</p><div class="table-wrap"><table><thead><tr><th>Load</th><th>Lower RPM</th><th>Middle RPM</th><th>Higher RPM</th></tr></thead><tbody id="learnedBody"></tbody></table></div><p>Idle &mdash; HE20010: <span id="learnedIdle">Not read</span></p><p id="learnedWarning" class="warn"></p><p class="tiny">Read-only. Reset eligibility depends on an incompletely reconstructed ECU-version check; reset and individual learned-value writes are deliberately not enabled.</p></div>
+</section>
+<section id="page-console" class="page" hidden aria-labelledby="consoleTitle">
+<div class="section-head"><div><div class="eyebrow">Workshop / serial transport</div><h1 id="consoleTitle">The wire, in plain sight.</h1><p>Timestamped transmit/receive chunks, exact commands and read-only manual queries.</p></div><div class="actions"><button id="resync" data-online>Resynchronize</button><button id="exportLog">Export wire log</button></div></div>
+<div class="panel"><div class="stats" id="stats"></div><div id="terminal" class="terminal" role="log" aria-label="Serial communication log" aria-live="off"></div><form id="rawForm" class="console-form"><label class="sr-only" for="rawCommand">Raw ECU read command</label><input id="rawCommand" value="HD20000" maxlength="16" autocomplete="off" spellcheck="false" placeholder="HD20000"><button id="sendRaw" data-online type="submit" class="primary">Send read</button><label class="sr-only" for="rawPreset">Read preset</label><select id="rawPreset"><option value="">Read presets</option value="HD20000">RPM &mdash; HD20000</option><option value="HD20002">Throttle &mdash; HD20002</option><option value="HE20035">CO1 &mdash; HE20035</option><option value="HE20015">Hours upper &mdash; HE20015</option><option value="HE20016">Hours lower &mdash; HE20016</option><option value="VERSION">ECU version (resolve pointer)</option><option value="HD00009">Native gear byte</option></select></form><p class="tiny" id="rawResult">Only <code>HD0xxxx</code>, <code>HD2xxxx</code>, <code>HE2xxxx</code> and <code>VERSION</code> are allowed here. VERSION is a local UI action: it sends HD2001F, then the resolved 16-byte read. No raw writes, address sweeps or ESP32 aliases.</p><div class="actions"><button id="clearLogView" class="small ghost">Clear visible log</button><span id="logCount" class="tiny">0 log events</span></div></div>
+<div class="panel"><h2>Connection settings</h2><div class="settings"><label class="field"><span>Response deadline, ms</span><input id="timeoutSetting" type="number" value="1000" min="300" max="5000" step="100"></label><label class="field"><span>Reply quiet interval, ms</span><input id="quietSetting" type="number" value="60" min="20" max="250" step="5"></label><label class="field"><span>DTR / RTS on open</span><select id="signalSetting"><option value="default">Leave driver defaults</option><option value="low">Both low</option><option value="high">Both high</option><option value="dtr">DTR high, RTS low</option><option value="rts">DTR low, RTS high</option></select></label></div><p>Settings apply on the next connection. Baud rate is fixed at <strong>19,200</strong>; 8 data bits, no parity, 1 stop bit, no hardware flow control. Every ECU command is terminated by CR+LF. No ISO slow initialization or password is sent.</p><details open><summary>First connection &amp; troubleshooting</summary><div class="aboutgrid"><div><p>Use a direct serial USB-to-K-line adapter with the correct motorcycle connector/pinout, such as your working iBeat cable. An ELM327 command interpreter is not a transparent substitute. The bike supplies K-line power; USB power alone may only power the adapter.</p><p>Open this HTML file as its own page in desktop Chrome or Edge, not inside an attachment preview. The adapter must be available as a serial port to the operating system. Close iBeat, Arduino Serial Monitor and terminal apps before connecting.</p></div><div><p>Echo with no payload means the adapter heard your command, not that the ECU answered. Check the key/kill-switch state, adapter power, K-line connection and ground. A red status after a timeout stops polling; use Resynchronize or disconnect/reconnect after fixing the cause.</p><p>This release targets a laptop/desktop browser. Feature detection, not a guessed browser name, controls Connect USB. For a browser that blocks local-file access, serve the included file on localhost using <code>start_local.py</code>. There is no cloud service and no network traffic.</p></div></div></details><details><summary>Conversions &amp; implementation notes</summary><div class="table-wrap"><table><thead><tr><th>Parameter</th><th>Command</th><th>Formula</th><th>Evidence / status</th></tr></thead><tbody id="formulaBody"></tbody></table></div><p>The older Rev1.1 document contains conflicting RPM formulas and reversed spark/injector labels. This build uses the later project mapping instead: RPM raw &times; 500 / 256, spark at 07, injection at 08, temperatures raw / 256 &minus; 50. Read docs/PROTOCOL.md in the complete package for provenance and exclusions.</p><p>Engine hours = (upper word &times; 65536 + lower word) / 6. CO = raw &times; 100 / 4096. New CO words are rounded to the nearest integer. The app does not use JavaScript's signed 32-bit arithmetic for the combined hours value.</p><p>The protocol has no request identifier or checksum in the observed replies. This implementation uses one request at a time, strict response validation, bounded buffers, a quiet interval and a timeout quarantine. Extremely late replies cannot be perfectly identified by software alone.</p></details></div>
+</section>
+<footer class="statusbar"><span id="job">Ready &middot; no adapter open</span><span>Independent test release &middot; v2.0.0 &middot; 17 Oct 2026 &middot; local-only</span></footer>
+<noscript><div class="notice error">JavaScript must be enabled to use this diagnostic app.</div></noscript>
+</main><script>/* Husky Diagnostics Direct USB v2.0.0
+ * Independent browser implementation of the project's Mikuni ASCII protocol.
+ * No ESP32 commands, ELM327 commands, firmware uploads, or network dependencies.
+ * Sources and confidence levels are documented in PROTOCOL.md.
+ */
+(function (root, factory) {
+  'use strict';
+  const api = factory();
+  if (typeof module === 'object' && module.exports) module.exports = api;
+  else root.HuskyCore = api;
+})(typeof globalThis !== 'undefined' ? globalThis : this, function () {
+  'use strict';
+  const VERSION = '2.0.0';
+  const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+  const hex4 = value => {
+    if (!Number.isInteger(value) || value < 0 || value > 65535) throw new Error('Expected an unsigned 16-bit word.');
+    return value.toString(16).toUpperCase().padStart(4, '0');
+  };
+  const codeAt = (prefix, address) => prefix + hex4(address);
+  const SENSOR_DEFS = [
+    {code:'HD20000',name:'Engine speed',unit:'rpm',digits:0,formula:'raw * 500 / 256',quality:'Source-confirmed by Rev 2.0 audit; hardware regression pending',convert:x=>x*500/256},
+    {code:'HD20001',name:'Battery voltage',unit:'V',digits:2,formula:'raw / 512',quality:'Carried forward from project mapping',convert:x=>x/512},
+    {code:'HD20002',name:'Throttle position',unit:'%',digits:2,formula:'raw / 512 (not clamped)',quality:'Project mapping; readings above 100% are retained',convert:x=>x/512},
+    {code:'HD20003',name:'Intake air temperature',unit:'\u00b0C',digits:2,formula:'raw / 256 - 50',quality:'Compared with iBeat on test bike',convert:x=>x/256-50},
+    {code:'HD20004',name:'Coolant temperature',unit:'\u00b0C',digits:2,formula:'raw / 256 - 50',quality:'Compared with iBeat on test bike',convert:x=>x/256-50},
+    {code:'HD20005',name:'Atmospheric pressure',unit:'kPa',digits:2,formula:'raw / 512',quality:'Carried forward from project mapping',convert:x=>x/512},
+    {code:'HD20006',name:'Manifold pressure',unit:'kPa',digits:2,formula:'raw / 512',quality:'Carried forward from project mapping',convert:x=>x/512},
+    {code:'HD20007',name:'Spark advance',unit:'\u00b0CA',digits:1,formula:'raw * 15 / 256 - 22.5',quality:'Source-confirmed by Rev 2.0 audit',convert:x=>x*15/256-22.5},
+    {code:'HD20008',name:'Injector pulse width',unit:'\u00b5s',digits:1,formula:'raw / 2',quality:'Source-confirmed by Rev 2.0 audit; 0.5 us per count',convert:x=>x/2},
+    {code:'HD20009',name:'Gear position',unit:'',digits:0,formula:'(raw >> 8) & 255',quality:'High-byte decoding confirmed; sensor faults still possible',convert:x=>(x>>>8)&255},
+    {code:'HD2000E',name:'TPS voltage',unit:'mV',digits:1,formula:'raw * 5000 / 65536',quality:'Prior iBeat-derived formula',convert:x=>x*5000/65536},
+    {code:'HD20020',name:'General fault status',unit:'',digits:0,formula:'0 = clear; any nonzero = fault indication',quality:'Source-confirmed by Rev 2.0 audit',convert:x=>x}
+  ];
+  const EXTRA_DEFS = [
+    {code:'HD00009',name:'Gear (native byte)',unit:'',digits:0,formula:'raw; FF = unknown',convert:x=>x},
+    {code:'HD2000A',name:'Tilt status bit',unit:'',digits:0,formula:'bit 14; physical polarity unverified',convert:x=>(x&0x4000)?1:0},
+    {code:'HD0000C',name:'Engine-running bit',unit:'',digits:0,formula:'bit 0',convert:x=>x&1},
+    {code:'HD2000D',name:'Idle status bit',unit:'',digits:0,formula:'bit 14',convert:x=>(x&0x4000)?1:0},
+    {code:'HD2000F',name:'Live O2 integrator',unit:'%',digits:2,formula:'raw * 100 / 65536 + 50',convert:x=>x*100/65536+50},
+    {code:'HD00010',name:'O2 feedback activity',unit:'',digits:0,formula:'0 = inactive; nonzero = active',convert:x=>x?1:0},
+    {code:'HD20011',name:'Current mode',unit:'',digits:0,formula:'C000 = Maintenance; other valid word = not Maintenance',convert:x=>x},
+    {code:'HD20040',name:'CO upper limit (raw ECU report)',unit:'%',digits:3,formula:'raw * 100 / 4096',convert:x=>x*100/4096},
+    {code:'HD20041',name:'CO lower limit (raw ECU report)',unit:'%',digits:3,formula:'raw * 100 / 4096',convert:x=>x*100/4096},
+    {code:'HE20000',name:'Learned TPS metadata',unit:'mV',digits:1,formula:'raw * 5000 / 65536',convert:x=>x*5000/65536},
+    {code:'HE20012',name:'AirPressureLearn metadata',unit:'raw',digits:0,formula:'physical unit unresolved',convert:x=>x},
+    {code:'HE20014',name:'Stored MaintenanceMode metadata',unit:'raw',digits:0,formula:'not the live mode; encoding unresolved',convert:x=>x},
+    ...[4,5,6].map((a,i)=>({code:codeAt('HE2',a),name:'O2 feedback setting '+(i+1),unit:'%',digits:2,formula:'raw * 100 / 4096',convert:x=>x*100/4096})),
+    ...Array.from({length:10},(_,i)=>({code:codeAt('HE2',7+i),name:i===9?'Learned idle':'Learned cell '+(i+1),unit:'%',digits:2,formula:'raw * 100 / 256 + 50; preserve high byte',convert:x=>x*100/256+50}))
+  ].map(d=>({...d,quality:'Rev 2.0 source definition; ECU/model support requires testing'}));
+  const DEF_BY_CODE = Object.fromEntries([...SENSOR_DEFS,...EXTRA_DEFS].map(d=>[d.code,d]));
+  function historyAddresses(pointer) {
+    if(!Number.isInteger(pointer)||pointer<0||pointer>16) return Array.from({length:16},(_,i)=>0x18+i);
+    const newest=(pointer===0?16:pointer)-1;
+    return Array.from({length:16},(_,i)=>0x18+((newest-i+16)%16));
+  }
+  function resolveCOLimits(upperRaw,lowerRaw) {
+    hex4(upperRaw);hex4(lowerRaw);
+    if(!upperRaw||!lowerRaw) throw new Error('CO limit read is zero; compatibility is not established. No write sent.');
+    const reportedUpper=upperRaw*100/4096,reportedLower=lowerRaw*100/4096;
+    const upper=reportedUpper>150?130:reportedUpper,lower=reportedLower<50?70:reportedLower;
+    if(lower>=upper)throw new Error('CO limits are inverted or empty. No write sent.');
+    return {upper,lower,upperRaw,lowerRaw,reportedUpper,reportedLower,sanityFallback:upper!==reportedUpper||lower!==reportedLower};
+  }
+  const FAULT_NAMES = ['Manifold pressure','O2 sensor','TPS sensor','Sensor supply','Gear position','Battery voltage','Coolant temperature','Intake air temperature','Tilt sensor','Injector','Ignition coil','O2 heater','EEPROM'];
+  const FAULT_DEFS = FAULT_NAMES.map((name,i)=>({name,index:i,code:codeAt('HD2',0x21+i)}));
+  const HISTORY_CODES = Array.from({length:16},(_,i)=>codeAt('HE2',0x27-i));
+  const DTC_NAMES = {};
+  for(let i=0;i<9;i++) {
+    DTC_NAMES[hex4((i<<8)|0x40)] = FAULT_NAMES[i]+' - low value';
+    DTC_NAMES[hex4((i<<8)|0x80)] = FAULT_NAMES[i]+' - high value';
+  }
+  for(let i=0;i<3;i++) {
+    DTC_NAMES[hex4(((0x20+i)<<8)|0x40)] = FAULT_NAMES[9+i]+' - short circuit';
+    DTC_NAMES[hex4(((0x20+i)<<8)|0x80)] = FAULT_NAMES[9+i]+' - open circuit';
+  }
+  DTC_NAMES['4040']='EEPROM - write error'; DTC_NAMES['4080']='EEPROM - read error';
+  function decodeHistory(raw) { return raw===0 ? 'Empty' : (DTC_NAMES[hex4(raw)] || 'Unknown code - raw value retained'); }
+  function decodeFault(raw,index) {
+    hex4(raw);
+    if(!Number.isInteger(index)||index<0||index>12)throw new Error('Invalid fault channel.');
+    const flags=[];
+    if(raw&0x4000)flags.push(index===12?'Read error':index>=9?'Open circuit':'High value / open circuit');
+    if(raw&0x0800)flags.push(index===12?'Write error':index>=9?'Short circuit':'Low value / short circuit');
+    const other=raw&0xB7FF;
+    if(other)flags.push('Other bits 0x'+hex4(other)+' (unmapped)');
+    return flags.length?flags.join('; '):'No fault flags';
+  }
+  function decode(code, raw) {
+    hex4(raw);
+    const d=DEF_BY_CODE[code];
+    if(d) return d.convert(raw);
+    if(/^HE2003[567]$/.test(code)) return raw*100/4096;
+    if(code==='HE20001') return raw*5000/65536;
+    return raw;
+  }
+  function formatValue(code,raw) {
+    const d=DEF_BY_CODE[code];
+    if(code==='HD20009'||code==='HD00009') { const gear=decode(code,raw); return gear===0?'N':gear<=6?String(gear):'Unknown ('+gear+')'; }
+    if(code==='HD20020') return raw===0?'No summary flags':'Fault present';
+    if(code==='HD20011')return raw===0xC000?'Maintenance':'Not Maintenance';
+    if(code==='HD00010')return raw===0?'Inactive':'Active';
+    return decode(code,raw).toFixed(d?d.digits:2);
+  }
+  function encodeCO(value,limits=null) {
+    if(typeof value==='string' && !/^\d+(?:\.\d+)?$/.test(value.trim())) throw new Error('Enter a CO percentage, such as 100.1.');
+    const x=Number(value);
+    if(!Number.isFinite(x)||x<=0||Math.round(x*4096/100)>65535) throw new Error('CO percentage is outside the word encoding.');
+    if(limits&&(x<limits.lower||x>limits.upper))throw new Error('CO must be within the resolved range '+limits.lower.toFixed(3)+' to '+limits.upper.toFixed(3)+'%. No write sent.');
+    if(Math.abs(x*10-Math.round(x*10))>1e-7) throw new Error('Use 0.1% steps.');
+    const raw=Math.round(x*4096/100);
+    if(limits&&(raw*100/4096<limits.lower-1e-9||raw*100/4096>limits.upper+1e-9))throw new Error('Rounded CO word would exceed the resolved ECU limits.');
+    return raw;
+  }
+  function decodeHours(hi,lo) {
+    hex4(hi);hex4(lo);
+    const ticks=hi*65536+lo; // Do not use signed JavaScript 32-bit bitwise arithmetic.
+    return {hi,lo,ticks,hours:Math.floor(ticks/6),minutes:(ticks%6)*10,decimalHours:ticks/6};
+  }
+  function asciiFromHex(hex) {
+    if(!/^(?:[0-9A-F]{2})+$/i.test(hex)) throw new Error('Invalid ASCII hex payload.');
+    let s='';
+    for(let i=0;i<hex.length;i+=2) {
+      const n=parseInt(hex.slice(i,i+2),16);
+      s += n===0 || n===255 ? ' ' : n>=32 && n<=126 ? String.fromCharCode(n) : '?';
+    }
+    return s;
+  }
+  function isReadCommand(command) { return /^(?:H[DE]2|HD0)[0-9A-F]{4}$/.test(command); }
+  function validateCommand(command, kind) {
+    if(typeof command!=='string'||command!==command.trim().toUpperCase()) throw new Error('Command must be uppercase with no whitespace.');
+    if(kind==='word' && /^H[DE]2[0-9A-F]{4}$/.test(command)) return;
+    if(kind==='byte' && /^HD0[0-9A-F]{4}$/.test(command)) return;
+    if(kind==='version' && /^H04[0-9A-F]{4}0010$/.test(command)) return;
+    if(kind==='ack' && /^HE3[0-9A-F]{8}$/.test(command)) {
+      const address=parseInt(command.slice(3,7),16),raw=parseInt(command.slice(7),16);
+      if([0x01,0x35,0x36,0x37].includes(address)) return;
+      if(address>=0x17&&address<=0x27&&raw===0) return;
+    }
+    throw new Error('Command blocked. Only reads, CO/TPS writes and zero-only history clears are implemented.');
+  }
+  /* Strict transaction parser: strip only the exact leading command echo.
+   * Never search an arbitrary response for a convenient group of four hex digits.
+   * Partial echoes, echo-only replies and multiple payloads cannot count as data.
+   */
+  function parseReply(buffer,command,kind) {
+    if(typeof buffer!=='string'||buffer.length>8192) return null;
+    let s=buffer.replace(/[\r\n\t ]/g,'').toUpperCase();
+    let echoes=0;
+    while(s.startsWith(command)&&echoes<2) { s=s.slice(command.length); echoes++; }
+    if(!s) return null;
+    // A truncated command echo such as HD200 is not a valid H-prefixed word.
+    // A non-echo adapter can disambiguate that rare literal word by a line ending.
+    if(!echoes && command.startsWith(s) && !/[\r\n]$/.test(buffer)) return null;
+    if(kind==='ack') return s==='HA'?{ack:'HA',payload:'HA',echoes}:null;
+    if(kind==='word' && /^H?[0-9A-F]{4}$/.test(s)) {
+      const payload=s.startsWith('H')?s.slice(1):s;
+      return {raw:parseInt(payload,16),hex:payload,payload,echoes};
+    }
+    if(kind==='byte' && /^H?[0-9A-F]{2}$/.test(s)){const payload=s.startsWith('H')?s.slice(1):s;return {raw:parseInt(payload,16),hex:payload,payload,echoes};}
+    if(kind==='version' && /^H?[0-9A-F]{32}$/.test(s)){const payload=s.startsWith('H')?s.slice(1):s;return {payload,text:asciiFromHex(payload).trim(),echoes};}
+    return null;
+  }
+  class ProtocolError extends Error {
+    constructor(message,code='PROTOCOL',details={}) {super(message);this.name='ProtocolError';this.code=code;Object.assign(this,details);}
+  }
+  class SerialProtocol {
+    constructor(wire,options={}) {
+      this.wire=wire;this.timeout=options.timeout??1000;this.quiet=options.quiet??60;
+      if(!Number.isFinite(this.timeout)||this.timeout<50||!Number.isFinite(this.quiet)||this.quiet<1||this.quiet>=this.timeout) throw new Error('Invalid serial timing.');
+      this.onLog=options.onLog||(()=>{});this.onState=options.onState||(()=>{});
+      this.pending=null;this.busy=false;this.tainted=false;this.closed=false;this.lastRx=Date.now();this.recovering=false;
+      this.stats={transactions:0,success:0,timeouts:0,errors:0,txBytes:0,rxBytes:0,lastLatency:null};
+      wire.onBytes=bytes=>this.receive(bytes);
+      wire.onError=error=>this.failLink(error);
+    }
+    log(direction,text,extra={}) {this.onLog({time:new Date().toISOString(),direction,text,...extra});}
+    receive(bytes) {
+      if(this.closed) return;
+      let text='';for(const b of bytes) text+=String.fromCharCode(b);
+      this.lastRx=Date.now();this.stats.rxBytes+=bytes.length;
+      this.log('RX',text,{command:this.pending?.command||'',orphan:!this.pending});
+      const p=this.pending;
+      if(!p) return;
+      p.buffer+=text;
+      if(p.buffer.length>8192) return this.rejectPending(new ProtocolError('Response exceeded buffer limit; stop and resynchronize.','OVERFLOW'));
+      clearTimeout(p.settle);
+      p.settle=setTimeout(()=>{
+        if(this.pending!==p) return;
+        const result=parseReply(p.buffer,p.command,p.kind);
+        if(result) this.resolvePending(result);
+      },this.quiet);
+    }
+    resolvePending(result) {
+      const p=this.pending;if(!p)return;
+      clearTimeout(p.deadline);clearTimeout(p.settle);this.pending=null;
+      const latency=Date.now()-p.started;
+      this.stats.success++;this.stats.lastLatency=latency;
+      p.resolve({...result,command:p.command,reply:p.buffer,latency,time:new Date().toISOString()});
+    }
+    rejectPending(error) {
+      const p=this.pending;if(!p)return;
+      clearTimeout(p.deadline);clearTimeout(p.settle);this.pending=null;this.tainted=true;
+      error.command=p.command;error.reply=p.buffer;
+      this.stats.errors++;if(error.code==='TIMEOUT')this.stats.timeouts++;
+      this.log('ERROR',error.message,{command:p.command,reply:p.buffer});p.reject(error);
+    }
+    failLink(error) {
+      if(this.closed)return;
+      this.tainted=true;
+      this.rejectPending(new ProtocolError('Serial connection lost: '+(error?.message||error),'DISCONNECTED'));
+      this.onState('error',error);
+    }
+    async waitQuiet(minimum=0) {
+      const started=Date.now(),limit=Math.max(minimum+this.timeout,this.timeout*2);
+      while(Date.now()-started<minimum||Date.now()-this.lastRx<this.quiet) {
+        if(this.closed)throw new ProtocolError('Connection is closed.','CLOSED');
+        if(Date.now()-started>limit)throw new ProtocolError('The serial line did not become quiet. Close other software or reconnect.','NOISY');
+        await sleep(Math.min(10,this.quiet));
+      }
+    }
+    async request(command,kind='word') {
+      validateCommand(command,kind);
+      if(this.closed)throw new ProtocolError('Connect the adapter first.','CLOSED');
+      if(this.busy||this.recovering)throw new ProtocolError('An ECU transaction is already in progress.','BUSY');
+      if(this.tainted)throw new ProtocolError('The previous response failed. Use Resynchronize before sending another command.','DESYNC');
+      this.busy=true;
+      try {
+        await this.waitQuiet();
+        if(this.closed)throw new ProtocolError('Connection is closed.','CLOSED');
+        const bytes=new TextEncoder().encode(command+'\r\n');
+        this.stats.transactions++;this.stats.txBytes+=bytes.length;
+        return await new Promise((resolve,reject)=>{
+          const p={command,kind,buffer:'',started:Date.now(),resolve,reject,settle:null,deadline:null};
+          this.pending=p;
+          p.deadline=setTimeout(()=>this.rejectPending(new ProtocolError('No complete '+kind+' reply for '+command+'. Echo alone does not prove ECU communication.','TIMEOUT')),this.timeout);
+          this.log('TX',command+'\r\n',{command});
+          try {
+            Promise.resolve(this.wire.write(bytes)).catch(e=>{
+              if(this.pending===p)this.rejectPending(new ProtocolError('USB write failed: '+e.message,'WRITE_FAILED'));
+              else {this.tainted=true;this.onState('error',e);}
+            });
+          } catch(e) {this.rejectPending(new ProtocolError('USB write failed: '+e.message,'WRITE_FAILED'));}
+        });
+      } finally {this.busy=false;}
+    }
+    async resynchronize() {
+      if(this.closed)throw new ProtocolError('Connection is closed.','CLOSED');
+      if(this.busy||this.recovering)throw new ProtocolError('Wait for the current transaction to finish.','BUSY');
+      this.recovering=true;
+      try {
+        // No transaction IDs exist on this wire. Quarantine a whole timeout
+        // interval before a new read; late bytes remain orphaned in the log.
+        this.log('INFO','Draining late data; no commands sent during resynchronization.');
+        await this.waitQuiet(this.timeout+this.quiet);this.tainted=false;
+      } finally {this.recovering=false;}
+    }
+    async close() {
+      if(this.closed)return;
+      this.closed=true;
+      this.rejectPending(new ProtocolError('Disconnected by user.','CLOSED'));
+      await this.wire.close();
+    }
+  }
+  class WebSerialWire {
+    constructor(port) {this.port=port;this.onBytes=()=>{};this.onError=()=>{};this.reader=null;this.writer=null;this.running=false;this.loop=null;}
+    async open(signals=null) {
+      await this.port.open({baudRate:19200,dataBits:8,stopBits:1,parity:'none',flowControl:'none',bufferSize:4096});
+      try {
+        if(signals)await this.port.setSignals(signals);
+        this.writer=this.port.writable.getWriter();this.running=true;this.loop=this.readLoop();
+      } catch(e) {await this.close();throw e;}
+    }
+    async readLoop() {
+      try {
+        while(this.running && this.port.readable) {
+          this.reader=this.port.readable.getReader();
+          try {
+            while(this.running) {
+              const {value,done}=await this.reader.read();
+              if(done)break;
+              if(value?.length)this.onBytes(value);
+            }
+          } catch(e) {
+            if(this.running)this.onError(e);
+            this.running=false; // Do not silently continue after framing/parity faults.
+          } finally {this.reader.releaseLock();this.reader=null;}
+        }
+        if(this.running){this.running=false;this.onError(new Error('Serial receive stream ended.'));}
+      } catch(e) {if(this.running)this.onError(e);this.running=false;}
+    }
+    write(bytes) {if(!this.writer)throw new Error('USB port is not open.');return this.writer.write(bytes);}
+    async close() {
+      this.running=false;
+      if(this.reader){try{await this.reader.cancel();}catch(_){}}
+      if(this.loop){try{await this.loop;}catch(_){}}
+      if(this.writer){try{await this.writer.abort();}catch(_){}try{this.writer.releaseLock();}catch(_){}this.writer=null;}
+      try{await this.port.close();}catch(_){}
+    }
+  }
+  class DemoWire {
+    constructor(options={}) {
+      this.onBytes=()=>{};this.onError=()=>{};this.closed=false;this.running=false;this.timers=new Set();this.sequence=0;
+      this.echo=options.echo??true;this.fragment=options.fragment??true;this.delay=options.delay??8;
+      this.words=new Map([['HE20001',0x3141],['HE20035',4096],['HE20036',4096],['HE20037',4096],['HE20015',0],['HE20016',0x95]]);
+      this.words.set('HE20017',16);
+      for(const a of [0,4,5,6,0x12,0x14])this.words.set(codeAt('HE2',a),a===0?0x3141:a<=6?0x1000:0);
+      for(let a=7;a<=0x10;a++)this.words.set(codeAt('HE2',a),0x80);
+      HISTORY_CODES.forEach(c=>this.words.set(c,0));this.words.set('HE20027',0x0780);this.words.set('HE20026',0x0640);
+      const saveString=(text,start,count)=>{
+        text=text.padEnd(count*2,' ');for(let i=0;i<count;i++)this.words.set(codeAt('HE2',start+i),(text.charCodeAt(i*2)<<8)|text.charCodeAt(i*2+1));
+      };
+      saveString('DEMO0000000000001',0x3A,9);saveString('DEMOENGINE',0x43,5);
+    }
+    emit(text,delay) {
+      const timer=setTimeout(()=>{this.timers.delete(timer);if(!this.closed)this.onBytes(new TextEncoder().encode(text));},delay);this.timers.add(timer);
+    }
+    async write(bytes) {
+      if(this.closed)throw new Error('Demo closed.');
+      const command=new TextDecoder().decode(bytes).trim();validateCommand(command,command.startsWith('HE3')?'ack':command.startsWith('H04')?'version':command.startsWith('HD0')?'byte':'word');
+      let response='';this.sequence++;
+      if(command.startsWith('H04'))response='H'+Array.from('DEMO-E010R803'.padEnd(16,' ')).map(c=>c.charCodeAt(0).toString(16).padStart(2,'0')).join('').toUpperCase();
+      else if(command.startsWith('HE3')){this.words.set('HE2'+command.slice(3,7),parseInt(command.slice(7),16));response='HA';}
+      else {
+        const phase=Math.sin(this.sequence/5);
+        const live={HD20000:this.running?Math.round(1020+phase*15):0,HD20001:Math.round((this.running?14.1:12.65)*512),HD20002:0,HD20003:20174,HD20004:22622,HD20005:Math.round(92.3*512),HD20006:Math.round((this.running?35+phase:92.3)*512),HD20007:Math.round(560+phase*6),HD20008:this.running?Math.round(5050+phase*140):0,HD20009:0,HD2000E:0x3141,HD20020:0,HD2001F:0xCF25,HD00009:0,HD2000A:0,HD0000C:this.running?1:0,HD2000D:0x4000,HD2000F:0x8000,HD00010:0,HD20011:0xC000,HD20040:Math.round(130*4096/100),HD20041:Math.round(70*4096/100)};
+        let value=this.words.has(command)?this.words.get(command):live[command];
+        if(value===undefined && FAULT_DEFS.some(d=>d.code===command))value=0;
+        if(value!==undefined)response='H'+(command.startsWith('HD0')?hex4(value).slice(2):hex4(value));
+      }
+      const d=this.delay;
+      if(this.echo){this.emit(command.slice(0,3),d);this.emit(command.slice(3)+'\r\n',d*2);}
+      if(response){if(this.fragment){this.emit(response.slice(0,2),d*3);this.emit(response.slice(2)+'\r\n',d*4);}else this.emit(response+'\r\n',d*3);}
+    }
+    async close() {this.closed=true;for(const t of this.timers)clearTimeout(t);this.timers.clear();}
+  }
+  class EcuClient {
+    constructor(protocol,onAudit=()=>{}){this.protocol=protocol;this.onAudit=onAudit;}
+    readWord(code){return this.protocol.request(code,'word');}
+    readByte(code){return this.protocol.request(code,'byte');}
+    read(code){return code.startsWith('HD0')?this.readByte(code):this.readWord(code);}
+    async readVersion(){
+      const p=await this.readWord('HD2001F'),pointer=p.raw||0x00F0;
+      const r=await this.protocol.request('H04'+hex4(pointer)+'0010','version');
+      return {...r,pointer,pointerRaw:p.raw,pointerHex:p.hex};
+    }
+    async readCOContext(){
+      const mode=await this.readWord('HD20011');
+      const upper=await this.readWord('HD20040'),lower=await this.readWord('HD20041');
+      return this.coContext={mode:mode.raw,...resolveCOLimits(upper.raw,lower.raw)};
+    }
+    async coPreflight(){
+      const mode=await this.readWord('HD20011');
+      if(mode.raw!==0xC000)throw new Error('Maintenance mode C000 is required for CO writes. No write sent.');
+      const upper=await this.readWord('HD20040'),lower=await this.readWord('HD20041');
+      return this.coContext={mode:mode.raw,...resolveCOLimits(upper.raw,lower.raw)};
+    }
+    async readHours(){
+      for(let n=0;n<3;n++){
+        const hi=await this.readWord('HE20015'),lo=await this.readWord('HE20016'),check=await this.readWord('HE20015');
+        if(hi.raw===check.raw)return {...decodeHours(hi.raw,lo.raw),time:check.time};
+      }
+      throw new Error('Operating-time upper word changed repeatedly; no combined value displayed.');
+    }
+    async readText(start,count,maxLength){
+      const words=[];for(let i=0;i<count;i++)words.push((await this.readWord(codeAt('HE2',start+i))).hex);
+      const rawHex=words.join(''),text=asciiFromHex(rawHex).slice(0,maxLength).trim();return {text,rawHex};
+    }
+    async readHistory(){
+      for(let attempt=0;attempt<3;attempt++){
+        const pointer=await this.readWord('HE20017'),result=[];
+        for(const a of historyAddresses(pointer.raw)){const r=await this.readWord(codeAt('HE2',a));result.push({...r,description:decodeHistory(r.raw)});}
+        const check=await this.readWord('HE20017');
+        if(check.raw!==pointer.raw)continue;
+        result.pointer=pointer.raw;result.pointerHex=pointer.hex;result.orderKnown=pointer.raw<=16;
+        return result;
+      }
+      throw new Error('History pointer changed repeatedly. Snapshot discarded; read again with the engine stopped.');
+    }
+    async ensureStopped(){const r=await this.readWord('HD20000');if(r.raw!==0)throw new Error('Engine must be stopped. No write was sent.');return r;}
+    async writeAndVerify(address,oldRaw,targetRaw,label,force=false){
+      hex4(oldRaw);hex4(targetRaw);
+      const readCode=codeAt('HE2',address),command=codeAt('HE3',address)+hex4(targetRaw);
+      validateCommand(command,'ack');
+      const audit={time:new Date().toISOString(),label,readCode,command,oldRaw,oldHex:hex4(oldRaw),targetRaw,targetHex:hex4(targetRaw),ack:null,readback:null,status:'intent-recorded'};
+      this.onAudit({...audit});
+      if(!force&&oldRaw===targetRaw){audit.status='unchanged';this.onAudit({...audit});return audit;}
+      try{audit.ack=(await this.protocol.request(command,'ack')).ack;}catch(e){audit.error=e.message;}
+      try{
+        if(this.protocol.tainted)await this.protocol.resynchronize();
+        const back=await this.readWord(readCode);audit.readback=back.raw;audit.readbackHex=back.hex;
+      }catch(e){audit.readbackError=e.message;}
+      audit.status=audit.ack==='HA'&&audit.readback===targetRaw?'verified':audit.readback===targetRaw?'matches-without-ack':'unverified';
+      audit.finished=new Date().toISOString();this.onAudit({...audit});
+      // No automatic resend or rollback, even if the acknowledgement was lost.
+      return audit;
+    }
+    async setCO(point,value){
+      if(!Number.isInteger(point)||point<1||point>3)throw new Error('Invalid CO point.');
+      encodeCO(value);
+      const limits=await this.coPreflight(),target=encodeCO(value,limits),address=0x34+point,old=await this.readWord(codeAt('HE2',address));
+      if(old.raw===0||old.raw===65535)throw new Error('Current CO word is zero or all ones. Compatibility is not established; no write sent.');
+      return this.writeAndVerify(address,old.raw,target,'CO'+point);
+    }
+    async restoreCO(point,originalRaw){
+      if(!Number.isInteger(point)||point<1||point>3)throw new Error('Invalid CO point.');
+      hex4(originalRaw);if(originalRaw===0||originalRaw===65535)throw new Error('Invalid session-original CO word; restore blocked.');
+      const limits=await this.coPreflight();
+      const percent=originalRaw*100/4096;
+      if(percent<limits.lower||percent>limits.upper)throw new Error('Session-original CO is outside the current resolved limits; restore blocked.');
+      const address=0x34+point,old=await this.readWord(codeAt('HE2',address));
+      if(old.raw===0||old.raw===65535)throw new Error('Current CO word is invalid; restore blocked.');
+      return this.writeAndVerify(address,old.raw,originalRaw,'CO'+point+' restore session original');
+    }
+    async resetTPS(closedThrottleConfirmed){
+      if(closedThrottleConfirmed!==true)throw new Error('Confirm that the throttle is fully closed.');
+      await this.ensureStopped();
+      const before=await this.readWord('HE20001'),a=await this.readWord('HD2000E');
+      if(before.raw===0||before.raw===65535)throw new Error('Saved TPS reference is at an endpoint; compatibility not established. No write sent.');
+      await this.ensureStopped();
+      const b=await this.readWord('HD2000E');
+      if(b.raw===0||b.raw===65535||Math.abs(a.raw-b.raw)>100)throw new Error('TPS signal is at an endpoint or moved during sampling. No write was sent.');
+      return this.writeAndVerify(0x01,before.raw,b.raw,'TPS idle reset');
+    }
+    async clearHistory(snapshot,confirmed){
+      if(confirmed!==true)throw new Error('History deletion was not confirmed.');
+      if(!Array.isArray(snapshot)||snapshot.length!==16||!Number.isInteger(snapshot.pointer)||new Set(snapshot.map(r=>r.command)).size!==16||snapshot.some(r=>!HISTORY_CODES.includes(r.command)||!Number.isInteger(r.raw)))throw new Error('Read the pointer and all 16 history entries before clearing.');
+      await this.ensureStopped();
+      const current=await this.readHistory(),byCode=new Map(snapshot.map(r=>[r.command,r.raw]));
+      if(current.pointer!==snapshot.pointer||current.some(r=>byCode.get(r.command)!==r.raw))throw new Error('Fault history changed since it was read. Refresh before clearing. No write sent.');
+      this.onAudit({time:new Date().toISOString(),label:'History snapshot before full clear',status:'snapshot',pointer:current.pointer,orderKnown:current.orderKnown,entries:current.map(r=>({...r}))});
+      const originals=new Map(current.map(r=>[parseInt(r.command.slice(3),16),r.raw]));originals.set(0x17,current.pointer);
+      const results=[];
+      for(let a=0x17;a<=0x27;a++){
+        await this.ensureStopped();await sleep(10);
+        const r=await this.writeAndVerify(a,originals.get(a),0,'Clear history '+codeAt('HE2',a),true);results.push(r);
+        if(r.status!=='verified')throw new Error('Full history clear stopped at '+hex4(a)+'. Earlier writes may have succeeded; no automatic resend. Export the audit log, then re-read history.');
+      }
+      const after=await this.readHistory();
+      return {results,after,empty:after.pointer===0&&after.every(r=>r.raw===0)};
+    }
+  }
+
+  function csv(rows){
+    return rows.map(row=>row.map(value=>{
+      let s=value===null||value===undefined?'':String(value);
+      // Protect spreadsheet consumers against formula interpretation of arbitrary device text.
+      if(typeof value==='string'&&/^[=+@-]/.test(s))s="'"+s;
+      return '"'+s.replace(/"/g,'""')+'"';
+    }).join(',')).join('\r\n');
+  }
+  return {VERSION,sleep,hex4,codeAt,SENSOR_DEFS,EXTRA_DEFS,historyAddresses,resolveCOLimits,DEF_BY_CODE,FAULT_DEFS,HISTORY_CODES,DTC_NAMES,decodeHistory,decodeFault,decode,formatValue,encodeCO,decodeHours,asciiFromHex,isReadCommand,validateCommand,parseReply,ProtocolError,SerialProtocol,WebSerialWire,DemoWire,EcuClient,csv};
+});
+</script><script>/* UI for Husky Diagnostics Direct USB. All ECU traffic passes through core.js. */
+(function () {
+  'use strict';
+  const C=window.HuskyCore,$=id=>document.getElementById(id);
+  const esc=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const S={protocol:null,client:null,wire:null,session:'',mode:'',busy:false,transition:false,monitoring:false,monitorPromise:null,page:'dashboard',latest:new Map(),co:[null,null,null],baseline:[null,null,null],history:null,faults:new Map(),vehicle:{},logs:[],samples:[],audits:[],logId:0,clearLogId:0,droppedLogs:0,droppedSamples:0,logDirty:true,lastGood:0,linkDead:false,exportedAudits:0,exportedSamples:0};
+  function message(text,kind='info'){$('message').textContent=text;$('message').className='notice'+(kind==='info'?'':' '+kind);}
+  function log(event){
+    const record={...event,id:++S.logId,session:S.session,mode:S.mode};S.logs.push(record);
+    if(S.logs.length>30000){S.logs.shift();S.droppedLogs++;}S.logDirty=true;
+  }
+  function audit(event){
+    S.audits.push({...event,session:S.session,mode:S.mode});
+    log({time:new Date().toISOString(),direction:'AUDIT',text:(event.label||'Operation')+': '+event.status+(event.command?' '+event.command:'')});
+  }
+  function download(filename,content,type='text/plain;charset=utf-8'){
+    const blob=new Blob([content],{type}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=filename;a.click();setTimeout(()=>URL.revokeObjectURL(url),10000);
+  }
+  const stamp=()=>new Date().toISOString().replace(/[:.]/g,'-');
+  const name=kind=>'Husky_'+kind+'_'+stamp();
+  function reportBase(){return {application:'Husky Diagnostics Direct USB',version:C.VERSION,exported:new Date().toISOString(),currentSession:S.session,currentMode:S.mode,droppedLogs:S.droppedLogs,droppedSamples:S.droppedSamples};}
+  function controls(){
+    const online=!!S.protocol&&!S.protocol.closed&&!S.linkDead;
+    const usable=online&&!S.busy&&!S.transition&&!S.protocol.tainted;
+    document.querySelectorAll('[data-online]').forEach(b=>b.disabled=!usable);
+    $('resync').disabled=!online||S.busy||S.transition;
+    $('startMonitor').disabled=!usable||S.monitoring||!!S.monitorPromise;
+    $('stopMonitor').disabled=!S.monitoring;
+    $('connectBtn').hidden=!!S.protocol;$('connectBtn').disabled=S.busy||S.transition||!('serial' in navigator)||!window.isSecureContext;
+    $('demoBtn').hidden=!!S.protocol;$('demoBtn').disabled=S.busy||S.transition;
+    $('disconnectBtn').hidden=!S.protocol;$('disconnectBtn').disabled=S.transition;
+    $('resetTPS').disabled=!usable||!$('throttleClosed').checked;
+    $('clearHistory').disabled=!usable||!S.history;
+    for(let p=1;p<=3;p++)$('restoreCO'+p).disabled=!usable||S.baseline[p-1]===null;
+    ['timeoutSetting','quietSetting','signalSetting'].forEach(id=>$(id).disabled=!!S.protocol||S.transition);
+    $('demoRunning').disabled=S.busy||S.transition;
+    $('monitorTarget').disabled=S.monitoring||S.busy;
+  }
+  function clearConnectionValues(){
+    S.latest.clear();S.co=[null,null,null];S.baseline=[null,null,null];S.history=null;S.faults.clear();S.vehicle={};S.lastGood=0;S.linkDead=false;
+    $('throttleClosed').checked=false;$('demoRunning').checked=false;
+    for(let p=1;p<=3;p++){ $('coInput'+p).value='';$('coResult'+p).textContent='';renderCO(p); }
+    ['tpsCurrent','tpsSaved'].forEach(id=>$(id).textContent='\u2014');
+    $('tpsCurrentRaw').textContent='HD2000E';$('tpsSavedRaw').textContent='HE20001';$('tpsInfo').textContent='Not read in this connection.';$('tpsResult').textContent='Documented sequence; bike test pending.';$('tpsResult').className='result';
+    ['vin','engineNo','ecuVersion','hours'].forEach(id=>$(id).textContent='Not read');
+    $('vinRaw').textContent='HE2003A-HE20042';$('engineRaw').textContent='HE20043-HE20047';$('versionRaw').textContent='HD2001F -> resolved 16-byte read';$('hoursRaw').textContent='HE20015 + HE20016';$('hoursDetail').textContent='Upper word is checked again to avoid a torn rollover read.';$('vehicleTime').textContent='Not read in this connection.';
+    $('generalFault').textContent='Not read';$('generalFault').className='badge';$('historyAge').textContent='Not read in this connection.';
+    renderFaults();renderHistory();renderAllCards();drawChart();
+    S.extra=new Map();renderExtra();$('coLimits').textContent='Mode and ECU limits not read in this connection.';
+  }
+  function settings(){
+    const timeout=Number($('timeoutSetting').value),quiet=Number($('quietSetting').value);
+    if(!Number.isInteger(timeout)||timeout<300||timeout>5000||!Number.isInteger(quiet)||quiet<20||quiet>250||quiet>=timeout)throw new Error('Use a deadline of 300-5000 ms and a quiet interval of 20-250 ms, smaller than the deadline.');
+    const mode=$('signalSetting').value;
+    const signals=mode==='default'?null:{dataTerminalReady:['high','dtr'].includes(mode),requestToSend:['high','rts'].includes(mode)};
+    return {timeout,quiet,signals};
+  }
+  async function connect(demo){
+    if(S.protocol||S.busy||S.transition)return;
+    let wire=null,port=null,config;
+    // Request the port directly in the click handler to preserve user activation.
+    try{config=settings();S.transition=true;controls();if(!demo)port=await navigator.serial.requestPort();}
+    catch(e){S.transition=false;controls();message(e.name==='NotFoundError'?'No serial port selected.':e.message,'warn');return;}
+    try{
+      wire=demo?new C.DemoWire():new C.WebSerialWire(port);
+      if(!demo)await wire.open(config.signals);
+      S.session=new Date().toISOString()+'-'+Math.random().toString(16).slice(2,8);S.mode=demo?'DEMO':'USB';clearConnectionValues();
+      S.wire=wire;
+      S.protocol=new C.SerialProtocol(wire,{timeout:config.timeout,quiet:config.quiet,onLog:log,onState:(state,error)=>{
+        if(state==='error'){S.linkDead=true;S.monitoring=false;message('Serial connection error. Disconnect and reconnect after checking the adapter. '+(error?.message||''),'error');controls();}
+      }});
+      S.client=new C.EcuClient(S.protocol,audit);$('demoBanner').hidden=!demo;
+      log({time:new Date().toISOString(),direction:'INFO',text:demo?'New DEMO session - simulated data only.':'USB adapter opened at 19200 8N1, no flow control, CR+LF. '+JSON.stringify(port.getInfo())});
+      S.transition=false;controls();
+      await execute('Checking ECU response',async client=>{
+        const response=await client.readWord('HD20001');recordReading(response);
+        message(demo?'Demo connected. Start monitoring or explore the other pages. No motorcycle is connected.':'ECU replied to HD20001. USB link is open; choose Start monitor or Read once.','good');
+      });
+    }catch(e){
+      if(wire)try{await wire.close();}catch(_){}
+      S.protocol=null;S.client=null;S.wire=null;
+      message('Could not open the adapter: '+e.message+'. Close other software using the port and check the adapter driver.','error');
+    }finally{S.transition=false;controls();updateStatus();}
+  }
+  async function disconnect(){
+    if(!S.protocol||S.transition)return;
+    S.transition=true;S.monitoring=false;controls();
+    const protocol=S.protocol;
+    try{await protocol.close();if(S.monitorPromise)await S.monitorPromise;}catch(e){log({time:new Date().toISOString(),direction:'ERROR',text:'Close: '+e.message});}
+    S.protocol=null;S.client=null;S.wire=null;S.linkDead=false;S.transition=false;
+    $('demoBanner').hidden=true;
+    message('Disconnected. Displayed readings are historical; a new connection will clear the cached values.');
+    $('job').textContent='Ready - no adapter open';controls();renderAllCards();updateStatus();
+  }
+  async function stopMonitor(){
+    S.monitoring=false;controls();
+    const pending=S.monitorPromise;
+    if(pending)await pending;
+    $('monitorStatus').textContent='Monitor stopped';controls();
+  }
+  async function execute(label,fn){
+    if(S.busy||S.transition)return;
+    if(!S.protocol){message('Connect USB or start the demo first.','warn');return;}
+    const protocol=S.protocol,client=S.client,session=S.session;
+    S.busy=true;controls();$('job').textContent=label+'...';
+    try{
+      await stopMonitor();
+      if(protocol.closed||session!==S.session)throw new Error('Operation cancelled by disconnect.');
+      return await fn(client,protocol);
+    }catch(e){
+      if(S.protocol===protocol&&!protocol.closed)message(label+': '+e.message,'error');
+      log({time:new Date().toISOString(),direction:'ERROR',text:label+': '+e.message});
+    }finally{
+      S.busy=false;controls();updateStatus();
+      if(!S.transition)$('job').textContent=S.protocol?'Ready - '+S.mode+' adapter open':'Ready - no adapter open';
+    }
+  }
+  function targets(){const t=$('monitorTarget').value;return t==='all'?C.SENSOR_DEFS:[C.DEF_BY_CODE[t]];}
+  async function startMonitor(){
+    if(!S.protocol||S.monitoring||S.monitorPromise||S.busy||S.protocol.tainted)return;
+    S.monitoring=true;controls();message(S.mode==='DEMO'?'Monitoring simulated ECU data.':'Monitoring ECU data. Stop waits for the current reply; no STOP text is sent to the ECU.');
+    const client=S.client,protocol=S.protocol,session=S.session,list=targets();
+    S.monitorPromise=(async()=>{
+      let i=0;
+      while(S.monitoring&&S.protocol===protocol&&!protocol.closed){
+        const d=list[i++%list.length];$('monitorStatus').textContent='Reading '+d.name;$('job').textContent='Monitoring '+(list.length===1?d.name:'all dashboard parameters');
+        try{const r=await client.read(d.code);if(session!==S.session)break;recordReading(r);}
+        catch(e){markFailed(d.code,e);S.monitoring=false;if(!protocol.closed)message('Monitoring stopped: '+e.message+' Use Console & setup > Resynchronize after checking the connection.','error');break;}
+        if(S.monitoring)await C.sleep(Number($('pace').value));
+      }
+    })().finally(()=>{S.monitoring=false;S.monitorPromise=null;$('monitorStatus').textContent='Monitor stopped';controls();if(!S.busy&&!S.transition)$('job').textContent=S.protocol?'Ready - '+S.mode+' adapter open':'Ready - no adapter open';});
+  }
+  function recordReading(r){
+    S.lastGood=Date.now();
+    if(!C.DEF_BY_CODE[r.command])return;
+    const d=C.DEF_BY_CODE[r.command];S.latest.set(r.command,{...r,received:Date.now(),valid:true});
+    S.samples.push({time:r.time,session:S.session,mode:S.mode,command:r.command,rawHex:r.hex,raw:r.raw,value:C.decode(r.command,r.raw),unit:d.unit,quality:d.quality,latencyMs:r.latency,status:'ok'});
+    if(S.samples.length>20000){S.samples.shift();S.droppedSamples++;}
+    renderCard(r.command);if($('chartChannel').value===r.command)drawChart();
+  }
+  function markFailed(code,error){
+    S.latest.set(code,{valid:false,error:error.message,received:Date.now()});
+    S.samples.push({time:new Date().toISOString(),session:S.session,mode:S.mode,command:code,rawHex:null,raw:null,value:null,unit:C.DEF_BY_CODE[code]?.unit||'',quality:C.DEF_BY_CODE[code]?.quality||'',status:error.code||'error',error:error.message});
+    if(S.samples.length>20000){S.samples.shift();S.droppedSamples++;}renderCard(code);drawChart();
+  }
+  function renderCard(code){
+    const el=document.querySelector('.card[data-code="'+code+'"]');if(!el)return;
+    const r=S.latest.get(code),valid=r?.valid;
+    el.classList.toggle('failed',!!r&&!valid);
+    el.classList.toggle('stale',!!valid&&(!S.protocol||Date.now()-r.received>5000));
+    el.querySelector('.value').textContent=valid?C.formatValue(code,r.raw):'\u2014';
+    el.querySelector('.hex').textContent=valid?'H'+r.hex:'\u2014';el.querySelector('.decimal').textContent=valid?String(r.raw):'\u2014';
+    el.querySelector('.age').textContent=!r?'Not read':!valid?'Read failed':!S.protocol?'Disconnected':Math.floor((Date.now()-r.received)/1000)+'s ago';
+    el.title=r&&!valid?r.error:C.DEF_BY_CODE[code].quality+' | '+C.DEF_BY_CODE[code].formula;
+  }
+  function renderAllCards(){C.SENSOR_DEFS.forEach(d=>renderCard(d.code));}
+  function renderCO(point){
+    const raw=S.co[point-1],base=S.baseline[point-1];
+    $('coCurrent'+point).textContent=raw===null?'\u2014':(raw*100/4096).toFixed(2)+'%';
+    $('coRaw'+point).textContent=raw===null?'HE2003'+(point+4):'H'+C.hex4(raw)+' / '+raw;
+    $('coOriginal'+point).textContent=base===null?'Original: not read':'Original: '+(base*100/4096).toFixed(2)+'% (H'+C.hex4(base)+')';
+  }
+  async function readCO(client,point){
+    const r=await client.readWord(C.codeAt('HE2',0x34+point));S.lastGood=Date.now();
+    S.co[point-1]=r.raw;
+    if(S.baseline[point-1]===null){S.baseline[point-1]=r.raw;audit({time:new Date().toISOString(),label:'CO'+point+' session original',status:'baseline',raw:r.raw,hex:r.hex});}
+    renderCO(point);if(!$('coInput'+point).value)$('coInput'+point).value=(r.raw*100/4096).toFixed(1);controls();return r;
+  }
+  function showWriteResult(result,element){
+    const good=['verified','unchanged'].includes(result.status);
+    let text=result.status==='unchanged'?'Already stored; no write sent.':result.status==='verified'?'Verified: HA received and exact readback matched.':result.status==='matches-without-ack'?'Readback matches, but HA was not received. No automatic retry.':'NOT VERIFIED. No automatic retry. Re-read the setting before further changes.';
+    text+=' Before H'+result.oldHex+'; requested H'+result.targetHex+(result.readbackHex?'; readback H'+result.readbackHex:'')+'.';
+    element.textContent=text;element.className='result '+(good?'good':'warn');message(result.label+': '+text,good?'good':'warn');
+  }
+  async function applyCO(point,restore=false){
+    await execute(restore?'Restoring CO'+point:'Applying CO'+point,async client=>{
+      // Validate typed input before even starting the read-write-read sequence.
+      if(!restore)C.encodeCO($('coInput'+point).value);
+      if(S.baseline[point-1]===null)await readCO(client,point);
+      const r=restore?await client.restoreCO(point,S.baseline[point-1]):await client.setCO(point,$('coInput'+point).value);
+      S.co[point-1]=r.readback??(r.status==='unchanged'?r.oldRaw:null);renderCO(point);
+      if(restore&&S.co[point-1]!==null)$('coInput'+point).value=(S.co[point-1]*100/4096).toFixed(1);
+      renderCOContext(client.coContext);showWriteResult(r,$('coResult'+point));
+    });
+  }
+  async function readTPS(client){
+    const rpm=await client.readWord('HD20000');recordReading(rpm);
+    const now=await client.readWord('HD2000E');recordReading(now);
+    const saved=await client.readWord('HE20001');S.lastGood=Date.now();
+    const throttle=await client.readWord('HD20002');recordReading(throttle);
+    $('tpsCurrent').textContent=C.decode('HD2000E',now.raw).toFixed(1)+' mV';$('tpsSaved').textContent=C.decode('HE20001',saved.raw).toFixed(1)+' mV';
+    $('tpsCurrentRaw').textContent='HD2000E: H'+now.hex;$('tpsSavedRaw').textContent='HE20001: H'+saved.hex;
+    $('tpsInfo').textContent='RPM '+C.decode('HD20000',rpm.raw)+' | Throttle '+C.decode('HD20002',throttle.raw).toFixed(2)+'% | Read '+new Date().toLocaleTimeString();
+  }
+  function renderFaults(){
+    $('faultBody').innerHTML=C.FAULT_DEFS.map(d=>{const r=S.faults.get(d.code);return '<tr><td>'+esc(d.name)+'</td><td class="'+(!r?'muted':r.raw===0?'good':'warn')+'">'+esc(r?C.decodeFault(r.raw,d.index):'Not read')+'</td><td class="mono">'+(r?'H'+r.hex:'\u2014')+'<div class="tiny">'+d.code+'</div></td></tr>';}).join('');
+  }
+  function renderHistory(){
+    $('historyBody').innerHTML=(S.history?S.history.map(r=>r.command):C.HISTORY_CODES).map((code,i)=>{const r=S.history?.[i];return '<tr><td>'+(i+1)+'</td><td class="'+(!r?'muted':r.raw===0?'muted':'warn')+'">'+(r?'<code>'+r.hex+'</code><div>'+esc(C.decodeHistory(r.raw))+'</div>':'Not read')+'</td><td class="mono">'+code+'</td></tr>';}).join('');
+  }
+  async function readFaultSet(client){
+    S.history=null;S.faults.clear();renderFaults();renderHistory();controls();
+    const general=await client.readWord('HD20020');recordReading(general);$('generalFault').textContent=C.formatValue(general.command,general.raw);$('generalFault').className='badge '+(general.raw===0?'good':'warn');
+    for(const d of C.FAULT_DEFS){$('job').textContent='Reading current fault: '+d.name;S.faults.set(d.code,await client.read(d.code));S.lastGood=Date.now();renderFaults();}
+    $('job').textContent='Reading 16 stored history entries...';S.history=await client.readHistory();S.lastGood=Date.now();renderHistory();renderHistoryPointer();controls();
+  }
+  async function readHours(client){
+    const h=await client.readHours();S.lastGood=Date.now();S.vehicle.hours=h;
+    $('hours').textContent=h.hours.toLocaleString()+' h '+h.minutes+' min';
+    $('hoursRaw').textContent='HE20015: H'+C.hex4(h.hi)+' | HE20016: H'+C.hex4(h.lo);
+    $('hoursDetail').textContent=h.decimalHours.toFixed(3)+' decimal hours | '+h.ticks.toLocaleString()+' ten-minute intervals'+(h.ticks===4294967295?' | WARNING: all-ones EEPROM value; do not assume valid hours.':'');
+    if(h.ticks===4294967295){$('hours').textContent='Uninitialized / all ones';}
+  }
+  function renderHistoryPointer(){
+    if(!S.history)return;
+    $('historyOrder').textContent=S.history.orderKnown?'Newest first (pointer-based)':'Order unknown: physical slots';
+    $('historyAge').textContent='HE20017: H'+S.history.pointerHex+' | '+(S.history.orderKnown?'Pointer '+S.history.pointer:'INVALID POINTER; chronology is not known')+' | '+new Date().toLocaleTimeString();
+  }
+  function renderCOContext(context){
+    if(!context)return;
+    $('coLimits').textContent=(context.mode===0xC000?'Maintenance mode':'Not Maintenance')+' (H'+C.hex4(context.mode)+') | effective CO range '+context.lower.toFixed(3)+' - '+context.upper.toFixed(3)+'%'+(context.sanityFallback?' | source-defined sanity fallback applied':'')+' | mode and limits rechecked before every write';
+    for(let p=1;p<=3;p++){
+      $('coInput'+p).min=(Math.ceil(context.lower*10)/10).toFixed(1);
+      $('coInput'+p).max=(Math.floor(context.upper*10)/10).toFixed(1);
+    }
+  }
+  async function readCOContext(client){
+    $('coLimits').textContent='Reading mode and ECU limits...';
+    try{renderCOContext(await client.readCOContext());}
+    catch(e){$('coLimits').textContent='Limits unavailable: '+e.message+' CO writes stay blocked without valid limits.';throw e;}
+  }
+  function renderExtra(){
+    const cell=code=>{const r=S.extra?.get(code);return !r?'<span class="muted">Not read</span>':r.error?'<span class="warn">'+esc(r.error)+'</span>':esc(C.formatValue(code,r.raw))+' '+esc(C.DEF_BY_CODE[code]?.unit||'')+'<div class="tiny mono">H'+r.hex+' / '+r.raw+'</div>';};
+    $('extraBody').innerHTML=C.EXTRA_DEFS.filter(d=>!(d.code.startsWith('HE2')&&parseInt(d.code.slice(3),16)>=7&&parseInt(d.code.slice(3),16)<=16)).map(d=>'<tr><td>'+esc(d.name)+'</td><td>'+cell(d.code)+'</td><td class="mono">'+d.code+'<div class="tiny">'+esc(d.formula)+'</div></td></tr>').join('');
+    $('learnedBody').innerHTML=[['Higher load',9,12,15],['Middle load',8,11,14],['Lower load',7,10,13]].map(row=>'<tr><th>'+row[0]+'</th>'+row.slice(1).map(a=>'<td>'+cell(C.codeAt('HE2',a))+'<div class="tiny mono">'+C.codeAt('HE2',a)+'</div></td>').join('')+'</tr>').join('');
+    $('learnedIdle').innerHTML=cell('HE20010');
+    const unexpected=Array.from(S.extra?.entries()||[]).filter(([code,r])=>/^HE2/.test(code)&&parseInt(code.slice(3),16)>=7&&parseInt(code.slice(3),16)<=16&&r.raw>255);
+    $('learnedWarning').textContent=unexpected.length?'Unexpected learned-value high byte: '+unexpected.map(([c])=>c).join(', ')+'. Full words are preserved; do not interpret them as normal learned percentages.':'';
+  }
+  async function readExtra(client,protocol){
+    S.extra=new Map();renderExtra();let unavailable=0;
+    for(const d of C.EXTRA_DEFS){
+      $('job').textContent='Reading '+d.name;
+      try{const r=await client.read(d.code);S.extra.set(d.code,r);S.lastGood=Date.now();}
+      catch(e){S.extra.set(d.code,{error:e.message});unavailable++;if(protocol.closed||S.linkDead)throw e;if(protocol.tainted)await protocol.resynchronize();}
+      renderExtra();
+    }
+    message('ECU state snapshot complete; '+unavailable+' unavailable reads. These values are read-only; stored O2 settings do not prove active feedback.',unavailable?'warn':'good');
+  }
+  function drawChart(){
+    if(S.page!=='dashboard')return;
+    const canvas=$('trace'),rect=canvas.getBoundingClientRect();if(rect.width<1)return;
+    const ratio=window.devicePixelRatio||1;canvas.width=Math.round(rect.width*ratio);canvas.height=Math.round(rect.height*ratio);
+    const ctx=canvas.getContext('2d');ctx.scale(ratio,ratio);const w=rect.width,h=rect.height;
+    const code=$('chartChannel').value,d=C.DEF_BY_CODE[code],data=S.samples.filter(r=>r.session===S.session&&r.command===code).slice(-180);
+    const good=data.filter(r=>r.status==='ok'&&Number.isFinite(r.value));$('chartEmpty').hidden=good.length>0;
+    if(!good.length){$('chartSummary').textContent='No samples in this connection.';return;}
+    let min=Math.min(...good.map(r=>r.value)),max=Math.max(...good.map(r=>r.value));
+    const span=max-min||Math.max(1,Math.abs(max)*.04);min-=span*.15;max+=span*.15;
+    const left=62,right=18,top=15,bottom=29,pw=w-left-right,ph=h-top-bottom;
+    const start=Date.parse(data[0].time),end=Date.parse(data[data.length-1].time),duration=Math.max(1000,end-start);
+    ctx.font='11px system-ui';ctx.textAlign='right';ctx.fillStyle='#a5b4c8';ctx.strokeStyle='#303c4e';ctx.lineWidth=1;
+    for(let i=0;i<=4;i++){const y=top+i*ph/4;ctx.beginPath();ctx.moveTo(left,y);ctx.lineTo(w-right,y);ctx.stroke();ctx.fillText((max-(max-min)*i/4).toFixed(d.digits>1?1:d.digits),left-10,y+4);}
+    ctx.textAlign='left';ctx.fillText('0 s',left,h-6);ctx.textAlign='right';ctx.fillText(((end-start)/1000).toFixed(1)+' s',w-right,h-6);
+    ctx.strokeStyle='#a6caff';ctx.lineWidth=2;ctx.beginPath();let started=false;
+    for(const r of data){if(r.status!=='ok'){started=false;continue;}const x=left+(Date.parse(r.time)-start)/duration*pw,y=top+(max-r.value)/(max-min)*ph;if(!started){ctx.moveTo(x,y);started=true;}else ctx.lineTo(x,y);}
+    ctx.stroke();
+    if(good.length===1){const y=top+(max-good[0].value)/(max-min)*ph;ctx.fillStyle='#a6caff';ctx.beginPath();ctx.arc(left,y,3,0,Math.PI*2);ctx.fill();}
+    $('chartSummary').textContent=good.length+' samples | '+d.name+' ('+(d.unit||'raw state')+') | min '+Math.min(...good.map(r=>r.value)).toFixed(d.digits)+' / max '+Math.max(...good.map(r=>r.value)).toFixed(d.digits)+' | '+S.mode;
+  }
+  function renderLog(){
+    if(!S.logDirty)return;S.logDirty=false;
+    const el=$('terminal'),atBottom=el.scrollHeight-el.scrollTop-el.clientHeight<55;
+    el.innerHTML=S.logs.filter(r=>r.id>S.clearLogId).slice(-250).map(r=>{
+      const text=r.text.replace(/\r/g,'\\r').replace(/\n/g,'\\n');
+      return '<div class="'+r.direction.toLowerCase()+'"><span class="time">'+esc(r.time.slice(11,23))+' '+esc(r.mode.padEnd(4))+'</span> '+esc(r.direction.padEnd(5))+' '+esc(text)+(r.orphan?' <span class="time">[outside transaction]</span>':'')+'</div>';
+    }).join('');
+    if(atBottom)el.scrollTop=el.scrollHeight;
+    $('logCount').textContent=S.logs.length.toLocaleString()+' events retained'+(S.droppedLogs?' | '+S.droppedLogs+' oldest events dropped':'');
+  }
+  function updateStatus(){
+    const p=S.protocol,b=$('connectionBadge');
+    if(!p){b.textContent='Disconnected';b.className='badge';}
+    else if(S.linkDead){b.textContent='USB link lost';b.className='badge warn';}
+    else if(p.tainted){b.textContent='Response error';b.className='badge warn';}
+    else if(S.mode==='DEMO'){b.textContent='DEMO - not a bike';b.className='badge warn';}
+    else if(S.lastGood){const age=Math.floor((Date.now()-S.lastGood)/1000);b.textContent='USB open | reply '+age+'s ago';b.className='badge'+(age<5?' good':'');}
+    else{b.textContent='USB open | ECU unverified';b.className='badge';}
+    const s=p?.stats||{transactions:0,success:0,txBytes:0,rxBytes:0,timeouts:0,lastLatency:null};
+    $('stats').innerHTML='<span>Requests <strong>'+s.transactions+'</strong></span><span>Valid replies <strong>'+s.success+'</strong></span><span>TX / RX bytes <strong>'+s.txBytes+' / '+s.rxBytes+'</strong></span><span>Timeouts <strong>'+s.timeouts+'</strong></span><span>Last transaction <strong>'+(s.lastLatency===null?'\u2014':s.lastLatency+' ms')+'</strong></span>';
+    renderAllCards();renderLog();controls();
+  }
+  function init(){
+    $('sensorGrid').innerHTML=C.SENSOR_DEFS.map(d=>'<article class="card" data-code="'+d.code+'"><div class="name">'+esc(d.name)+(d.check?'<span class="check">Check</span>':'')+'</div><div class="reading"><span class="value">\u2014</span><span class="unit">'+esc(d.unit)+'</span></div><div class="rawline mono">'+d.code+' &middot; <span class="hex">\u2014</span></div><div class="rawline">Decimal <span class="decimal">\u2014</span></div><div class="cardfoot"><span class="age">Not read</span><button class="small ghost" data-online data-read="'+d.code+'" aria-label="Read '+esc(d.name)+'">Read</button></div></article>').join('');
+    C.SENSOR_DEFS.forEach(d=>{$('monitorTarget').add(new Option(d.name,d.code));if(d.code!=='HD20020')$('chartChannel').add(new Option(d.name,d.code));});
+    $('formulaBody').innerHTML=C.SENSOR_DEFS.map(d=>'<tr><td>'+esc(d.name)+'</td><td><code>'+d.code+'</code></td><td><code>'+esc(d.formula)+'</code></td><td>'+esc(d.quality)+'</td></tr>').join('');
+    $('coRows').innerHTML=[1,2,3].map(p=>'<div class="co-row"><div><div class="co-name">CO'+p+'</div><div id="coOriginal'+p+'" class="co-note">Original: not read</div></div><div><div id="coCurrent'+p+'" class="co-current">\u2014</div><div id="coRaw'+p+'" class="co-note mono">HE2003'+(p+4)+'</div></div><label class="field"><span>New value, %</span><input id="coInput'+p+'" type="number" min="0.1" step="0.1" inputmode="decimal" aria-label="CO'+p+' new percentage"></label><button id="applyCO'+p+'" data-online class="primary">Apply</button><button id="restoreCO'+p+'" data-online class="small">Restore original</button><div id="coResult'+p+'" class="result"></div></div>').join('');
+    clearConnectionValues();
+    $('connectBtn').onclick=()=>connect(false);$('demoBtn').onclick=()=>connect(true);$('disconnectBtn').onclick=disconnect;
+    $('demoRunning').onchange=()=>{if(S.wire instanceof C.DemoWire){S.wire.running=$('demoRunning').checked;log({time:new Date().toISOString(),direction:'INFO',text:'Demo engine '+(S.wire.running?'running':'stopped')});}};
+    document.querySelectorAll('[data-tab]').forEach(button=>button.onclick=()=>{
+      S.monitoring=false;S.page=button.dataset.tab;
+      document.querySelectorAll('[data-tab]').forEach(b=>{b.classList.toggle('active',b===button);if(b===button)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');});
+      document.querySelectorAll('.page').forEach(el=>el.hidden=el.id!=='page-'+S.page);controls();if(S.page==='dashboard')drawChart();if(S.page==='console'){S.logDirty=true;renderLog();}
+    });
+    document.querySelectorAll('[data-read]').forEach(button=>button.onclick=()=>execute('Reading '+button.dataset.read,async client=>{
+      try{const r=await client.read(button.dataset.read);recordReading(r);message(r.command+': '+C.formatValue(r.command,r.raw)+' '+(C.DEF_BY_CODE[r.command]?.unit||'')+' | H'+r.hex+' / '+r.raw,'good');}catch(e){markFailed(button.dataset.read,e);throw e;}
+    }));
+    $('startMonitor').onclick=startMonitor;$('stopMonitor').onclick=async()=>{await stopMonitor();if(S.protocol&&!S.protocol.tainted)message('Monitor stopped. The adapter remains connected; readings keep their timestamps.');};
+    $('readOnce').onclick=()=>execute('Reading dashboard',async client=>{
+      for(const d of targets()){try{recordReading(await client.read(d.code));}catch(e){markFailed(d.code,e);throw e;}}
+      message('Read complete. Values are a timestamped snapshot, not a continuous stream.','good');
+    });
+    $('chartChannel').onchange=drawChart;window.addEventListener('resize',drawChart);
+    $('readAdjustments').onclick=()=>execute('Reading CO and TPS',async client=>{for(let p=1;p<=3;p++)await readCO(client,p);await readTPS(client);await readCOContext(client);message('Current CO and TPS values read from '+(S.mode==='DEMO'?'the simulator.':'the ECU.'),'good');});
+    for(let p=1;p<=3;p++){$('applyCO'+p).onclick=()=>applyCO(p);$('restoreCO'+p).onclick=()=>applyCO(p,true);}
+    $('throttleClosed').onchange=controls;
+    $('readTPS').onclick=()=>execute('Reading TPS',async client=>{await readTPS(client);message('TPS snapshot read.','good');});
+    $('resetTPS').onclick=()=>execute('Setting TPS idle',async client=>{
+      if(!$('throttleClosed').checked)throw new Error('Confirm the throttle is fully closed.');
+      if(!window.confirm('Set the CURRENT throttle voltage as the saved idle reference?\n\nThe engine must be stopped and the throttle fully closed. The app will sample the voltage again before writing. This browser operation still needs motorcycle validation.'))return;
+      const r=await client.resetTPS(true);showWriteResult(r,$('tpsResult'));$('throttleClosed').checked=false;await readTPS(client);
+    });
+    $('readFaults').onclick=()=>execute('Reading faults and history',async client=>{await readFaultSet(client);message('Fault snapshot read. Stored codes and current flags are shown separately.','good');});
+    $('clearHistory').onclick=()=>execute('Clearing stored history',async client=>{
+      if(!S.history)throw new Error('Read fault history first.');
+      const count=S.history.filter(r=>r.raw!==0).length;
+      // A full clear includes the pointer and zero slots, even when count is zero.
+      if(!window.confirm('Perform the full 17-word history clear ('+count+' nonempty slots)?\n\nEngine OFF, key ON. Experimental browser operation. The snapshot is preserved in the audit log. Current sensor faults are NOT cleared or repaired. No write is automatically retried.'))return;
+      const outcome=await client.clearHistory(S.history,true);S.history=outcome.after;renderHistory();renderHistoryPointer();
+      message(outcome.empty?'Stored history cleared and read back empty. Current fault monitor was not reset.':'Clear finished, but history is not empty. A code may have returned; review the snapshot.',outcome.empty?'good':'warn');
+    });
+    $('readVehicle').onclick=()=>execute('Reading vehicle information',async client=>{
+      const ver=await client.readVersion();S.lastGood=Date.now();S.vehicle.version=ver;$('ecuVersion').textContent=ver.text||'(blank)';$('versionRaw').textContent='HD2001F: H'+ver.pointerHex+' -> '+ver.command+' | H'+ver.payload;
+      const vin=await client.readText(0x3A,9,17);S.vehicle.vin=vin;$('vin').textContent=vin.text||'(blank)';$('vinRaw').textContent=vin.rawHex;
+      const engine=await client.readText(0x43,5,10);S.vehicle.engine=engine;$('engineNo').textContent=engine.text||'(blank)';$('engineRaw').textContent=engine.rawHex;
+      await readHours(client);$('vehicleTime').textContent='Read '+new Date().toLocaleString()+' | '+S.mode;message('Vehicle information read.','good');
+    });
+    $('readExtra').onclick=()=>execute('Reading ECU state and learned values',readExtra);
+    $('readHours').onclick=()=>execute('Reading engine hours',async client=>{await readHours(client);message('Operating time read with a repeated upper-word check.','good');});
+    $('resync').onclick=()=>execute('Resynchronizing',async(client,protocol)=>{await protocol.resynchronize();const r=await client.readWord('HD20001');recordReading(r);message('ECU probe replied after resynchronization. Monitoring remains stopped.','good');});
+    $('rawPreset').onchange=()=>{if($('rawPreset').value)$('rawCommand').value=$('rawPreset').value;};
+    $('rawForm').onsubmit=event=>{
+      event.preventDefault();const command=$('rawCommand').value.trim().toUpperCase();
+      if(command!=='VERSION'&&!C.isReadCommand(command)){message('Not an allowed raw read. Enter HD0xxxx, HD2xxxx, HE2xxxx or VERSION. No bytes sent.','warn');return;}
+      execute('Raw read '+command,async(client,protocol)=>{
+        const r=command==='VERSION'?await client.readVersion():await client.read(command);S.lastGood=Date.now();
+        if(C.DEF_BY_CODE[command])recordReading(r);
+        const text=r.text!==undefined?r.text:'H'+r.hex+' | decimal '+r.raw+(C.DEF_BY_CODE[command]?' | '+C.formatValue(command,r.raw)+' '+C.DEF_BY_CODE[command].unit:'');
+        $('rawResult').textContent=command+' -> '+text;message(command+' -> '+text,'good');
+      });
+    };
+    $('clearLogView').onclick=()=>{S.clearLogId=S.logId;S.logDirty=true;renderLog();};
+    $('exportLog').onclick=()=>{
+      const rows=[['time_utc','session','mode','direction','command','text_exact','byte_hex','outside_transaction']];
+      S.logs.forEach(r=>rows.push([r.time,r.session,r.mode,r.direction,r.command||'',r.text,['TX','RX'].includes(r.direction)?Array.from(r.text).map(c=>c.charCodeAt(0).toString(16).padStart(2,'0')).join(' '):'',!!r.orphan]));
+      download(name('wire_log')+'.csv',C.csv(rows),'text/csv;charset=utf-8');
+    };
+    $('exportSamples').onclick=()=>{
+      const keys=['time','session','mode','command','rawHex','raw','value','unit','quality','latencyMs','status','error'];
+      download(name('readings')+'.csv',C.csv([keys,...S.samples.map(r=>keys.map(k=>r[k]))]),'text/csv;charset=utf-8');S.exportedSamples=S.samples.length;
+    };
+    $('exportAudit').onclick=()=>{download(name('audit')+'.json',JSON.stringify({...reportBase(),vehicle:S.vehicle,calibrationOriginals:S.baseline,audits:S.audits},null,2),'application/json');S.exportedAudits=S.audits.length;};
+    $('exportFaults').onclick=()=>download(name('faults')+'.json',JSON.stringify({...reportBase(),general:S.latest.get('HD20020')||null,current:Array.from(S.faults.values()),history:S.history?{pointer:S.history.pointer,orderKnown:S.history.orderKnown,entries:S.history}:null,vehicle:S.vehicle},null,2),'application/json');
+    if(!window.isSecureContext||!('serial' in navigator)){
+      $('compatibility').hidden=false;$('compatibility').textContent=!window.isSecureContext?'This page is not in a secure browser context. Open the standalone HTML locally or on localhost/HTTPS. Demo is still available.':'This browser does not expose Web Serial here. Use desktop Chrome or Edge for the USB test. Demo is still available.';
+    }
+    window.addEventListener('beforeunload',e=>{
+      if(S.busy||S.monitoring||S.audits.length>S.exportedAudits||S.samples.length>S.exportedSamples){e.preventDefault();e.returnValue='';}
+    });
+    window.addEventListener('pagehide',()=>{S.monitoring=false;if(S.protocol)S.protocol.close().catch(()=>{});});
+    document.addEventListener('visibilitychange',()=>{
+      if(document.hidden&&S.monitoring){S.monitoring=false;message('Monitoring stopped because the tab was hidden. Return to Dashboard and press Start monitor to resume.');}
+    });
+    // Expose only an immutable diagnostic snapshot for troubleshooting / automated tests.
+    window.HuskyDiagnostics={version:C.VERSION,snapshot:()=>({session:S.session,mode:S.mode,connected:!!S.protocol,monitoring:S.monitoring,busy:S.busy,tainted:S.protocol?.tainted||false,stats:S.protocol?{...S.protocol.stats}:null,samples:S.samples.length,audits:S.audits.length,latest:Object.fromEntries(S.latest),co:[...S.co],baseline:[...S.baseline],historyPointer:S.history?.pointer??null,extra:Object.fromEntries(S.extra||[]),history:S.history?.map(r=>({code:r.command,raw:r.raw}))||null})};
+    controls();updateStatus();setInterval(updateStatus,700);
+  }
+  init();
+})();
+</script></body></html>
